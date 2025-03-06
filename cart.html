@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        #cart-items {
+            margin: 20px auto;
+            width: 50%;
+            text-align: left;
+        }
+        #cart-items p {
+            font-size: 1.2em;
+        }
+        #total {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        #download-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        #download-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Cart</h1>
+        <div id="cart-items"></div>
+        <p id="total"></p>
+        <button id="download-button">Download Receipt</button>
+    </div>
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartItemsContainer = document.getElementById('cart-items');
+        const totalDisplay = document.getElementById('total');
+        let totalSpent = 0;
+
+        // Display cart items
+        cart.forEach(item => {
+            const itemElement = document.createElement('p');
+            itemElement.textContent = `${item.name} x ${item.quantity} - $${(item.price * item.quantity).toLocaleString()}`;
+            cartItemsContainer.appendChild(itemElement);
+            totalSpent += item.price * item.quantity;
+        });
+
+        // Display total
+        totalDisplay.textContent = `Total Spent: $${totalSpent.toLocaleString()}`;
+
+        // Download receipt
+        document.getElementById('download-button').addEventListener('click', () => {
+            let receiptContent = "Itemized Receipt\n\n";
+            cart.forEach(item => {
+                receiptContent += `${item.name} x ${item.quantity} - $${(item.price * item.quantity).toLocaleString()}\n`;
+            });
+            receiptContent += `\nTotal Spent: $${totalSpent.toLocaleString()}`;
+
+            const blob = new Blob([receiptContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'receipt.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

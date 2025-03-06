@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spend Elon Musk's Money</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+        }
+        #net-worth {
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #cart {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #cart h2 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+        #cart p {
+            margin: 5px 0;
+        }
+        #items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .item {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+        }
+        .item h3 {
+            margin: 10px 0;
+        }
+        .item p {
+            margin: 5px 0;
+        }
+        .quantity-chooser {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .quantity-chooser input {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .add-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .add-button:hover {
+            background-color: #218838;
+        }
+        #message {
+            font-size: 1.2em;
+            color: #d9534f;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #cart-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #007bff;
+            text-decoration: none;
+        }
+        #cart-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="cart">
+        <h2>Cart</h2>
+        <p>Items: <span id="cart-count">0</span></p>
+        <p>Total: $<span id="cart-total">0</span></p>
+        <a href="cart.html" style="background-color: #28a745; color: white; padding: 8px 12px; border-radius: 5px; text-decoration: none;">Download Receipt</a>
+    </div>
+    <div class="container">
+        <h1>Spend Elon Musk's Money</h1>
+        <p id="net-worth">Net Worth: $<span id="money">360000000000</span></p>
+        <div id="items"></div>
+        <p id="message"></p>
+        <a href="cart.html" id="cart-link">View Cart</a>
+    </div>
+    <script>
+        const netWorth = 360000000000; // Elon Musk's net worth
+        let moneyLeft = netWorth;
+        const cart = []; // Stores purchased items
+
+        const products = [
+            { name: "Gum", price: 2, image: "images/gum.png" },
+            { name: "Coffee", price: 5, image: "images/coffee.png" },
+            { name: "Book", price: 15, image: "images/book.png" },
+            { name: "Movie Ticket", price: 20, image: "images/movie_ticket.png" },
+            { name: "Pizza", price: 25, image: "images/pizza.png" },
+            { name: "Headphones", price: 100, image: "images/headphones.png" },
+            { name: "Smartwatch", price: 300, image: "images/smartwatch.png" },
+            { name: "Gaming Console", price: 500, image: "images/gaming_console.png" },
+            { name: "Bike", price: 750, image: "images/bike.png" },
+            { name: "iPhone", price: 1000, image: "images/iphone.png" },
+            { name: "Laptop", price: 1200, image: "images/laptop.png" },
+            { name: "Designer Bag", price: 2000, image: "images/designer_bag.png" },
+            { name: "Diamond Ring", price: 15000, image: "images/diamond_ring.png" },
+            { name: "Luxury Watch", price: 20000, image: "images/luxury_watch.png" },
+            { name: "Sports Car", price: 100000, image: "images/sports_car.png" },
+            { name: "Private Jet", price: 5000000, image: "images/private_jet.png" },
+            { name: "Mansion", price: 15000000, image: "images/mansion.png" },
+            { name: "Island", price: 60000000, image: "images/island.png" },
+            { name: "Superyacht", price: 100000000, image: "images/superyacht.png" },
+            { name: "Space Rocket", price: 200000000, image: "images/space_rocket.png" }
+        ];
+
+        const itemsContainer = document.getElementById('items');
+        const moneyDisplay = document.getElementById('money');
+        const messageDisplay = document.getElementById('message');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+
+        // Display all items
+        products.forEach(product => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+
+            const itemImage = document.createElement('img');
+            itemImage.src = product.image;
+            itemImage.alt = product.name;
+
+            const itemName = document.createElement('h3');
+            itemName.textContent = product.name;
+
+            const itemPrice = document.createElement('p');
+            itemPrice.textContent = `$${product.price.toLocaleString()}`;
+
+            const quantityChooser = document.createElement('div');
+            quantityChooser.className = 'quantity-chooser';
+
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.value = 1;
+            quantityInput.min = 1;
+
+            const addButton = document.createElement('button');
+            addButton.className = 'add-button';
+            addButton.textContent = '+ Add';
+            addButton.onclick = () => addToCart(product, parseInt(quantityInput.value));
+
+            quantityChooser.appendChild(quantityInput);
+            quantityChooser.appendChild(addButton);
+
+            itemDiv.appendChild(itemImage);
+            itemDiv.appendChild(itemName);
+            itemDiv.appendChild(itemPrice);
+            itemDiv.appendChild(quantityChooser);
+
+            itemsContainer.appendChild(itemDiv);
+        });
+
+        function addToCart(product, quantity) {
+            const totalCost = product.price * quantity;
+            if (moneyLeft >= totalCost) {
+                moneyLeft -= totalCost;
+                moneyDisplay.textContent = moneyLeft.toLocaleString();
+
+                const existingItem = cart.find(item => item.name === product.name);
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({ ...product, quantity });
+                }
+
+                updateCartDisplay();
+                messageDisplay.textContent = `You added ${quantity} ${product.name}(s) to your cart!`;
+                localStorage.setItem('cart', JSON.stringify(cart));
+            } else {
+                messageDisplay.textContent = "Not enough money to buy this item!";
+            }
+        }
+
+        function updateCartDisplay() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalSpent = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+            cartCount.textContent = totalItems;
+            cartTotal.textContent = totalSpent.toLocaleString();
+        }
+    </script>
+</body>
+</html>
